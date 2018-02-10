@@ -448,6 +448,18 @@ SlideDeck.prototype.addFonts_ = function(fonts) {
  */
 SlideDeck.prototype.buildNextItem_ = function() {
   var slide = this.slides[this.curSlide_];
+  var buildStart = slide.querySelectorAll('.build-all > .to-build:first-child, :not(.to-build) + .to-build');
+
+  if(buildStart.length > 0) {
+      for (var j = 0, newBuild; newBuild = buildStart[j]; j++) {
+          newBuild.classList.remove('to-build');
+          if (newBuild.classList.contains('fade')) {
+              newBuild.classList.add('build-fade');
+          }
+      }
+      return true;
+  }
+
   var toBuild = slide.querySelector('.to-build');
   var built = slide.querySelector('.build-current');
 
@@ -696,7 +708,12 @@ SlideDeck.prototype.updateSlideClass_ = function(slideNo, className) {
  */
 SlideDeck.prototype.makeBuildLists_ = function () {
   for (var i = this.curSlide_, slide; slide = this.slides[i]; ++i) {
-    var items = slide.querySelectorAll('.build > *');
+    var buildAlls = slide.querySelectorAll('.build-all');
+    for(var k =0, buildAll; buildAll = buildAlls[k]; k++){
+        buildAll.classList.add('build');
+    }
+
+    var items = slide.querySelectorAll('.build > *, .build-all > *');
     for (var j = 0, item; item = items[j]; ++j) {
       if (item.classList) {
         item.classList.add('to-build');
